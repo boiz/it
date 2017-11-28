@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Autocomplete</title>
+</head>
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="../lib/1.css">
+
+<style>
+.themebg {
+    background-color: #a1bff6;
+}
+
+.hints{
+    clear:both;
+    width:auto;
+    margin-left:10px;
+}
+
+
+
+</style>
+<body>
+
+
+<aside class="search themebd">
+	<div class="wrapper">
+        <form class="ofh" onsubmit="return false">
+            <input id="q" type="search" autocomplete="off" placeholder="search a game">
+            <a id="s" class="click themebg hide"></a>
+        </form>
+        <ul class="dropdown hide">
+            <li><a href="#">Action 52 <span class="highlight">(Active</span> Enterprises) (REVA) [!]</a></li>
+        </ul>
+	</div>
+</aside>
+
+<div class="hints">
+    <p class="b">Notes</p>
+    <p>Type a name like "mario" in input section, it's a list from NES games database</p>
+    <p>Press up or down key and you can move the highlight.</p>
+</div>
+
+
+<script src="js/json.js"></script>
+<script src="js/lib.js"></script>
+<script src="js/search.js"></script>
+
+</body>
+</html>

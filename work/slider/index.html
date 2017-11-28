@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Image slider</title>
+</head>
+<body>
+
+
+<style>
+
+
+body {
+	margin: 0;
+}
+
+.frame {
+	width: 100%;
+	height: 400px;
+	background:;
+	overflow: hidden;
+	position: relative;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.slider {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+
+.slider li {
+	position: absolute;
+	background-position: center;
+	height: 100%;
+	width: 100%;
+	opacity: 0;
+	/*transition: all ease .5s;*/
+	transition: z-index 0.5s step-start, opacity 0.5s linear;
+	z-index: 0;
+}
+
+.slider li.on {
+	z-index: 1;
+	opacity: 1;
+}
+
+.dotframe {
+	bottom: 0;
+	position: absolute;
+	text-align: center;
+	width: 100%;
+	font-size: 0;
+	z-index: 3;
+}
+
+.dots {
+	display: inline-block;
+}
+
+.dots li {
+	float: left;
+	width: 14px;
+	height: 14px;
+	background: white;
+	border-radius: 7px;
+	margin: 5px;
+	margin-bottom: 10px;
+	cursor: pointer;
+}
+
+.dots li.on{
+	background:orange;
+}
+
+.arrow{
+    position: absolute;
+    z-index: 3;
+    width: 100%;
+    top:180px;
+    transition: all ease .7s;
+    opacity: 0;
+}
+
+.frame:hover .arrow{
+	opacity:1;
+}
+
+.arrow div{
+	width:40px;
+	height:40px;
+	border-radius:20px;
+	background:url(images/arrow.png) #666 center no-repeat;
+	background-size:60%;
+	opacity:.6;
+	cursor:pointer;
+}
+
+.arrow div:hover{
+	opacity:.8;
+}
+
+
+.arrow .l{
+	float:left;
+	transform: rotate(180deg);
+	margin-left:10px;
+}
+
+.arrow .r{
+	float:right;
+	margin-right:10px;
+}
+
+.hints{
+	font-family: "arial";
+	margin-left:20px;
+	line-height: 12px;
+	font-size:14px;
+}
+
+.hints .b{
+	font-weight:bold;
+}
+
+</style>
+
+
+<div class="frame">
+	<ul class="slider">
+		<li class="on" style="background-image:url(images/1.jpg);"></li>
+		<li style="background-image:url(images/2.jpg);"></li>
+		<li style="background-image:url(images/3.jpg);"></li>
+	</ul>
+
+	<div class="arrow">
+		<div class="l"></div>
+		<div class="r"></div>
+	</div>	
+
+	<div class="dotframe">
+		<ul class="dots">
+			<li class="on">1</li>
+			<li>2</li>
+			<li>3</li>
+		</ul>
+	</div>
+</div>
+
+<div class="hints">
+	<p class="b">Notes</p>
+	<p>Hover on the slider and it stops playing automatically, meanwhile the left and right buttons toggle.</p>
+	<p>Click on left or right arrow the images will switch.</p>
+	<p>Click on the little circles at the bottom will navigate the images.</p>
+	<p>Leave mouse outside silder, it resume playing.
+</div>
+
+<script src="../../js/jquery-1.11.0.min.js"></script>
+<script>
+
+/*Image Slider Fadein ver 0.9 on May 6, 2017*/
+
+function slider(){
+	var index=0;
+	var fin=true;
+	var li=$(".slider li");
+	var len=li.length;
+
+	function change(i){
+		var last=$(".slider .on").index();
+		var curr=li.eq(i);
+
+		if(i==last) return;
+
+		fin=false;
+		curr.addClass("on").css("z-index",2);
+		setTimeout(function(){
+			li.eq(last).removeClass("on");
+			curr.css("z-index","");
+			fin=true;
+		},700);
+
+		$(".dots .on").removeClass("on");
+		$(".dots li").eq(i).addClass("on");
+	}
+
+	$(".l").click(function(){
+		if(!fin) return;
+		change(--index<0?index=len-1:index);
+	});
+
+	$(".r").click(function(){
+		if(!fin) return;
+		change(++index==len?index=0:index);
+	});
+
+	$(".dots li").click(function(){
+		if(!fin) return;
+		var i=index=$(this).index();
+		change(i);
+	});
+
+	function set(){
+		intv=setInterval(function(){
+			if(!fin) return;
+			change(++index==len?index=0:index);
+		},3000);
+	}
+	
+	set();
+	$(".frame").hover(function(){
+		clearInterval(intv);
+	},function(){
+		clearInterval(intv);
+		set();
+	});	
+
+
+}
+
+slider();
+
+</script>
+
+
+
+</body>
+</html>

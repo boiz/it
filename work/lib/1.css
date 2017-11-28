@@ -1,0 +1,10 @@
+.hints{
+	font-family: "arial";
+	margin-left:20px;
+	line-height: 12px;
+	font-size:12px;
+}
+
+.hints .b{
+	font-weight:bold;
+}

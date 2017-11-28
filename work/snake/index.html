@@ -1,0 +1,310 @@
+<style>
+.spot {background-color:gray; border: 1px solid white; width:15px; height:15px; display:inline-block;}
+.panel{margin-bottom:10px;}
+.hints{margin-bottom:30px;}
+
+</style>
+<link rel="stylesheet" type="text/css" href="../lib/1.css">
+<head>
+<title>Snake</title>
+</head>
+<body>
+
+<div class="hints">
+    <p class="b">Notes</p>
+    <p>This was made in 2015 when I was ready to make a project</p>
+    <p>Use "up, down, left, right" keys to control.</p>
+</div>
+
+<div class="panel">
+
+	<label>Speed</label>
+	<select id="diff">
+	<option>Slow</option>
+	<option selected>Medium</option>
+	<option>Fast</option>
+	</select>
+	<label>Score:</label> <label id="scoreElmt">0</label>
+	<input id="start" type="button" value="Start">
+	<input id="restart" type="button" value="Restart" disabled="">
+
+</div>
+
+</body>
+
+<script>
+// Snake JS program by boiz last modify date Jan.5 2016
+function snake(){
+
+
+
+	var div;
+	var divParent;
+	var body=document.body;
+	var line=document.getElementsByClassName("line");
+	var occ=[]; //occ=occupied spots.
+	var intv; //interval global variable.
+	var tout
+	var i;
+	var j;
+	var k;
+	var m;
+	var n;
+	var his=[]; //his=history spots
+	var step; 
+	var preDir;
+	var a;
+	var b;
+	var c; //c=moving counter
+	var preKey;
+	var turnTime;
+	var mainTime=new Date();
+
+	var foodR;
+	var foodC;
+	var grow;
+
+
+
+	var mapRows=30;
+	var mapColumns=30;
+	var dead=false;
+	var timing=200;
+	var len=5;
+	var initialOn=true;
+	var score=0;
+
+	//bugs tail len problem if it is too long;
+
+	function createFood(){
+		do{
+		var row=ran(0,mapRows);
+		var column=ran(0,mapColumns);
+		}
+
+		while(occ[row][column])
+		var s=line[row].getElementsByTagName("div");
+		s[column].style.backgroundColor="blue";
+		foodR=row;
+		foodC=column;
+		console.log(foodR,foodC);
+		return true;
+	}
+
+
+	function createSnake(){
+		var iR=ran(len-1,mapRows-len); //initial row
+		var iC=ran(len-1,mapColumns-len); //initial column
+		if(iC<mapColumns/2){
+			for(step=0;step<len;step++){
+			draw(iR,iC+step);}//right
+			move("right");
+			}
+		else{
+			for(step=0;step<len;step++){
+			draw(iR,iC-step);}
+			move("left");
+			}
+	}
+
+	//random number n<=num<m
+	function ran(n,m){
+		var num;
+		do{	num=Math.floor(m*Math.random());}
+		while(num<n)
+		return num;
+		}
+
+
+
+	window.onkeydown=function(e){
+		if(!dead){
+			switch(e.keyCode){
+				case 37:move("left");break;
+				case 38:move("up");break;
+				case 39:move("right");break;
+				case 40:move("down");break;
+				}
+			}
+		}
+
+	function pre(){
+		//calculating pre dirction
+		m=his[step-1][0]-his[step-2][0];
+		n=his[step-1][1]-his[step-2][1];
+		if(m==0&&n==1) {preDir="right"}
+		if(m==-1&&n==0) {preDir="up"}
+		if(m==1&&n==0) {preDir="down"}
+		if(m==0&&n==-1) {preDir="left"}
+		}
+		
+	function opposite(d){
+		switch(d){
+			case "left": return "right";
+			case "right": return "left";
+			case "up": return "down";
+			case "down": return "up";
+			}
+		
+		}
+
+
+	function main(direction){
+		if(preDir=="left"){
+			if(direction=="up") {draw(a+ --c,b);}//moving up
+			if(direction=="down") {draw(a+ ++c,b);}//moving down
+			if(direction=="left"||direction=="right") {draw(a,b+ --c);}//moving left
+			}
+		
+		if(preDir=="right"){
+			if(direction=="up") {draw(a+ --c,b);}//moving up
+			if(direction=="down") {draw(a+ ++c,b);}//moving down
+			if(direction=="left"||direction=="right") {draw(a,b+ ++c);}//moving right
+			}
+		
+		if(preDir=="up"){
+			if(direction=="left") {draw(a,b+ --c);}//moving left
+			if(direction=="right") {draw(a,b+ ++c);}//moving right
+			if(direction=="up"||direction=="down") {draw(a+ --c,b);}//moving up
+			}
+				
+		if(preDir=="down"){
+			if(direction=="left") {draw(a,b+ --c);}//moving left
+			if(direction=="right") {draw(a,b+ ++c);}//moving right
+			if(direction=="up"||direction=="down") {draw(a+ ++c,b);}//moving down
+			}
+			
+			//grow process
+		if(grow==true){
+			scoreElmt.innerHTML= ++score;
+			len++;
+			grow=false;
+						
+			}
+		else if(!dead){
+			erase(his[step-len][0],his[step-len][1]);}
+				
+			step++;
+			mainTime=new Date();
+	}
+
+
+	function move(direction){
+		pre();
+		if((direction!=opposite(preDir))&&(direction!=preDir)&&(direction!=preKey)||initialOn){
+			initialOn=false;
+			turnTime=new Date();
+			turnTime=timing-((turnTime-mainTime)%timing);
+			preKey=direction;
+			clearInterval(intv);
+		
+			//getting head position
+			a=his[step-1][0];
+			b=his[step-1][1];
+			c=0; 
+		
+			tout=setTimeout(function(){
+				main(direction);
+				intv=setInterval(function(){main(direction)},timing);
+				},turnTime);
+		
+		}
+	}
+
+
+	function deadProcess(){
+		dead=true;
+		alert("Game Over");
+		clearInterval(intv);
+		clearTimeout(tout);
+		restart.removeAttribute("disabled");
+		}
+
+	function draw(row,column){
+		
+		//dead check
+		if(row>mapRows-1||row<0||column>mapColumns-1||column<0) {
+			deadProcess();
+			return;}
+		else if (occ[row][column]){
+			deadProcess();
+			return;}
+			
+		//food part
+		if(row==foodR&&column==foodC){
+			grow=true;
+			createFood();}
+			
+		//draw
+		var s=line[row].getElementsByTagName("div");
+		s[column].style.backgroundColor="red";
+		
+		//remember
+		occ[row][column]=true;
+		his[step]=[row,column];
+		
+	}
+
+	function erase(row,column){
+		var s=line[row].getElementsByTagName("div");
+		s[column].style.backgroundColor="gray";
+		occ[row][column]=undefined;
+	}
+
+	function createMap(row,column){
+		for(i=0;i<row;i++){
+			divParent=document.createElement("div");
+			divParent.className="line";
+			for(j=0;j<column;j++){
+			div=document.createElement("div");
+			div.className="spot";
+			divParent.appendChild(div);
+
+			//initial occupied 2-dimension array
+			occ[i]=[];
+		}
+		body.appendChild(divParent);
+		}
+	}
+
+	function resetMap(){
+		var line;
+		var r;
+		do{
+			line=document.querySelector(".line");
+			r=line?body.removeChild(line):0;
+		}
+		while(r)
+	}
+
+	resetMap();	
+	createMap(mapRows,mapColumns);//initial map
+
+	//panel function
+	start.onclick=function(){
+
+		switch(diff.options.selectedIndex){
+			case 0: timing=500; break;
+			case 1: timing=200; break;
+			case 2: timing=100; break;
+			}
+		resetMap();	
+		createMap(mapRows,mapColumns);//initial map
+		createSnake(); //initial snake
+		createFood();
+		
+		start.setAttribute("disabled","");
+		restart.setAttribute("disabled","")
+		}
+}
+
+snake();
+
+restart.onclick=function(){
+	start.removeAttribute("disabled");
+	snake();
+	start.click();
+}
+
+
+</script>
